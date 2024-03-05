@@ -1,0 +1,155 @@
+/* Colors */
+
+:root {
+  --c-primary: #141414;
+  --c-secondary: #f3f3f3;
+  --c-accent: #3d5a80;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --c-primary: #f3f3f3;
+    --c-secondary: #141414;
+    --c-accent: #98c1d9;
+  }
+}
+
+/* Base */
+
+*,
+::before,
+::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  height: 100%;
+  background-color: var(--c-secondary);
+  color: var(--c-primary);
+}
+body {
+  gap: 4rem;
+  min-height: 100%;
+  padding: 2rem 1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 1.2rem;
+  text-align: center;
+}
+main {
+  flex-grow: 1;
+  justify-content: center;
+}
+select {
+  /* Styling taken and modified from https://codepen.io/vkjgr/pen/VYMeXp */
+  padding: 0.5em 3.5em 0.5em 1em;
+  border: thin solid var(--c-accent);
+  border-radius: 0.5rem;
+  background-color: inherit;
+  /*
+    The background properties below form the arrow on the right of the select
+    element, it goes left part of the arrow, right part of the arrow,
+    background.
+  */
+  background-image: linear-gradient(
+      45deg,
+      transparent 50%,
+      var(--c-secondary) 50%
+    ),
+    linear-gradient(135deg, var(--c-secondary) 50%, transparent 50%),
+    linear-gradient(var(--c-accent), var(--c-accent));
+  background-position: calc(100% - 1.5rem) 1em, calc(100% - 1rem) 1em, 100%;
+  background-size: 0.5rem 0.5rem, 0.5rem 0.5rem, 2.5em;
+  background-repeat: no-repeat;
+  font: inherit;
+  color: inherit;
+  appearance: none;
+}
+input[type="range"] {
+  accent-color: var(--c-accent);
+}
+button {
+  cursor: pointer;
+}
+svg {
+  stroke: var(--c-primary);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+a {
+  color: var(--c-accent);
+}
+:focus {
+  border-radius: 0.5rem;
+  outline: thin solid var(--c-accent);
+  outline-offset: 0.5rem;
+}
+
+/* Sections */
+
+.dropdown {
+  align-items: center;
+  gap: 1rem;
+}
+.dropdown select {
+  width: max-content;
+}
+
+.player {
+  display: grid;
+  grid-template-areas:
+    "play-button play-button play-button"
+    "dec-button bpm inc-button"
+    "range-input range-input range-input";
+  align-items: center;
+  gap: 1.5rem;
+  width: fit-content;
+  margin: 2rem auto;
+}
+.play-button {
+  grid-area: play-button;
+}
+.play-button svg {
+  width: 5rem;
+  height: 5rem;
+}
+.bpm {
+  grid-area: bpm;
+  /*
+    Specifying a fixed width prevents shifting when content changes from 6 to 7
+    characters and vice versa.
+  */
+  width: 7ch;
+  font-size: 1.5rem;
+}
+.dec-button {
+  grid-area: dec-button;
+}
+.inc-button {
+  grid-area: inc-button;
+}
+.dec-button svg,
+.inc-button svg {
+  width: 2rem;
+  height: 2rem;
+}
+.range-input {
+  grid-area: range-input;
+}
+
+/* Utilities */
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.hidden {
+  display: none;
+}
+.bottom-spacer {
+  margin-bottom: 1em;
+}
+.no-button {
+  border: none;
+  background: inherit;
+}

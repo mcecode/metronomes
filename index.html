@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Metronomes</title>
+  </head>
+  <body class="flex-column">
+    <main class="flex-column">
+      <h1 class="bottom-spacer">Metronomes</h1>
+      <section class="dropdown flex-column bottom-spacer">
+        <label for="metronome-dropdown"> Metronome Implementation </label>
+        <select id="metronome-dropdown">
+          <option value="audio-loop" selected>Audio Loop</option>
+          <option value="custom-timer">Custom Timer</option>
+          <option value="event-queue">Event Queue</option>
+          <option value="lookahead-timer">Lookahead Timer</option>
+        </select>
+      </section>
+
+      <section class="player bottom-spacer">
+        <button
+          id="metronome-play"
+          class="play-button no-button"
+          aria-labelledby="metronome-play-title"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <title id="metronome-play-title">Play</title>
+            <g id="svg-play">
+              <polygon points="2.75 2.75,2.75 13.25,12.25 8" />
+            </g>
+            <g id="svg-pause" class="hidden">
+              <rect height="10.5" width="3.5" y="2.75" x="2.75" />
+              <rect height="10.5" width="3.5" y="2.75" x="9.75" />
+            </g>
+          </svg>
+        </button>
+        <button
+          id="bpm-dec"
+          class="dec-button no-button"
+          aria-labelledby="bpm-dec-title"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <title id="bpm-dec-title">Decrement</title>
+            <path d="m13.25 7.75h-10.5" />
+          </svg>
+        </button>
+        <p id="bpm-value" class="bpm" aria-live="assertive">135 BPM</p>
+        <button
+          id="bpm-inc"
+          class="inc-button no-button"
+          aria-labelledby="bpm-inc-title"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <title id="bpm-inc-title">Increment</title>
+            <path d="m12.75 7.75h-10m5-5v10" />
+          </svg>
+        </button>
+        <input
+          id="bpm-range"
+          class="range-input"
+          type="range"
+          min="30"
+          max="240"
+          value="135"
+          aria-label="BPM Slider"
+        />
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        <a href="https://mce.codes" target="_blank">made by mcecode</a>
+      </p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
