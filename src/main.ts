@@ -69,7 +69,14 @@ let currentMetronome = metronomeDropdown.value;
 updateBpm();
 
 metronomeDropdown.addEventListener("change", () => {
-  metronomeLookup[currentMetronome].pause();
+  if (metronomePlayTitle.textContent === "Pause") {
+    svgPlay.classList.toggle("hidden");
+    svgPause.classList.toggle("hidden");
+
+    metronomeLookup[currentMetronome].pause();
+    metronomePlayTitle.textContent = "Play";
+  }
+
   currentMetronome = metronomeDropdown.value;
   updateMetronomeBpm();
 });
