@@ -38,6 +38,7 @@ const bpmValue = document.getElementById("bpm-value") as HTMLParagraphElement;
 
 function updateMetronomeBpm() {
   metronomeLookup[currentMetronome].updateBpm(+bpmRange.value);
+  localStorage.setItem("bpm", bpmRange.value);
 }
 
 let updateBpmTimeoutId: number;
@@ -48,7 +49,8 @@ function updateBpm() {
     clearTimeout(updateBpmTimeoutId);
   }
 
-  // Actually updating the metronome BPM could be expensive, so debounce it.
+  // Debounce updating the BPM as it could be expensive depending on the
+  // implementation.
   updateBpmTimeoutId = setTimeout(updateMetronomeBpm, 750);
 }
 
@@ -64,8 +66,16 @@ function stepUpBpm() {
 
 // Setup and event listeners
 
+const storedCurrentMetronome = localStorage.getItem("currentMetronome");
+if (storedCurrentMetronome) {
+  metronomeDropdown.value = storedCurrentMetronome;
+}
 let currentMetronome = metronomeDropdown.value;
 
+const storedBpm = localStorage.getItem("bpm");
+if (storedBpm) {
+  bpmRange.value = storedBpm;
+}
 updateBpm();
 
 metronomeDropdown.addEventListener("change", () => {
@@ -78,6 +88,8 @@ metronomeDropdown.addEventListener("change", () => {
   }
 
   currentMetronome = metronomeDropdown.value;
+  localStorage.setItem("currentMetronome", metronomeDropdown.value);
+
   updateMetronomeBpm();
 });
 
