@@ -1,5 +1,5 @@
 export default interface Metronome {
-  play(): void;
-  pause(): void;
+  play(): Promise<void> | void;
+  pause(): Promise<void> | void;
   updateBpm(bpm: number): void;
 }
