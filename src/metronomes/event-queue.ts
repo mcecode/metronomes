@@ -3,9 +3,9 @@ import type Metronome from "./metronome.ts";
 export default class EventQueue implements Metronome {
   #isPlaying = false;
   #audioContext = new AudioContext();
-  #oscillatorNode: OscillatorNode | null = null;
-  #nextNoteStart = 0;
-  #bpmInSeconds = 60 / 135;
+  #queue: OscillatorNode[] = [];
+  #nextNoteTime = 0;
+  #secondsPerBeat = 60 / 135;
 
   async play() {
     if (this.#isPlaying) {
@@ -14,8 +14,8 @@ export default class EventQueue implements Metronome {
 
     await this.#audioContext.resume();
 
-    this.#nextNoteStart = this.#audioContext.currentTime;
-    this.#oscillate();
+    this.#nextNoteTime = this.#audioContext.currentTime;
+    this.#populate();
 
     this.#isPlaying = true;
   }
@@ -27,41 +27,61 @@ export default class EventQueue implements Metronome {
 
     await this.#audioContext.suspend();
 
-    if (this.#oscillatorNode) {
-      this.#oscillatorNode.stop(this.#audioContext.currentTime);
-      this.#oscillatorNode.onended = null;
-      this.#oscillatorNode = null;
-    }
+    this.#clear();
 
     this.#isPlaying = false;
   }
 
   updateBpm(bpm: number) {
-    this.#bpmInSeconds = 60 / bpm;
+    this.#secondsPerBeat = 60 / bpm;
+
+    if (this.#isPlaying) {
+      this.#clear();
+      this.#nextNoteTime =
+        this.#audioContext.currentTime + this.#secondsPerBeat;
+      this.#populate();
+    }
   }
 
-  #oscillate() {
+  #populate() {
+    for (let i = 0; i < 4; i++) {
+      this.#enqueue();
+    }
+  }
+
+  #enqueue() {
     const oscillatorNode = new OscillatorNode(this.#audioContext, {
       // E4
       frequency: 330
     });
     const gainNode = new GainNode(this.#audioContext);
 
-    gainNode.gain.linearRampToValueAtTime(1, this.#nextNoteStart);
-    gainNode.gain.linearRampToValueAtTime(0, this.#nextNoteStart + 0.03);
+    gainNode.gain.linearRampToValueAtTime(1, this.#nextNoteTime);
+    gainNode.gain.linearRampToValueAtTime(0, this.#nextNoteTime + 0.03);
 
     oscillatorNode.connect(gainNode);
     gainNode.connect(this.#audioContext.destination);
 
-    oscillatorNode.start(this.#nextNoteStart);
-    oscillatorNode.stop(this.#nextNoteStart + 0.03);
+    oscillatorNode.start(this.#nextNoteTime);
+    oscillatorNode.stop(this.#nextNoteTime + 0.03);
 
     oscillatorNode.onended = () => {
-      this.#oscillate();
+      this.#enqueue();
+      this.#queue.shift();
+
       oscillatorNode.onended = null;
     };
 
-    this.#oscillatorNode = oscillatorNode;
-    this.#nextNoteStart += this.#bpmInSeconds;
+    this.#queue.push(oscillatorNode);
+    this.#nextNoteTime += this.#secondsPerBeat;
+  }
+
+  #clear() {
+    for (const item of this.#queue) {
+      item.stop(this.#audioContext.currentTime);
+      item.onended = null;
+    }
+
+    this.#queue = [];
   }
 }
