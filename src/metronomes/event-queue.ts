@@ -4,7 +4,7 @@ export default class EventQueue implements Metronome {
   #isPlaying = false;
   #audioContext = new AudioContext();
   #queue: OscillatorNode[] = [];
-  #nextNoteTime = 0;
+  #nextOscillationTime = 0;
   #secondsPerBeat = 60 / 135;
 
   async play() {
@@ -14,7 +14,7 @@ export default class EventQueue implements Metronome {
 
     await this.#audioContext.resume();
 
-    this.#nextNoteTime = this.#audioContext.currentTime;
+    this.#nextOscillationTime = this.#audioContext.currentTime;
     this.#populate();
 
     this.#isPlaying = true;
@@ -37,7 +37,7 @@ export default class EventQueue implements Metronome {
 
     if (this.#isPlaying) {
       this.#clear();
-      this.#nextNoteTime =
+      this.#nextOscillationTime =
         this.#audioContext.currentTime + this.#secondsPerBeat;
       this.#populate();
     }
@@ -56,14 +56,14 @@ export default class EventQueue implements Metronome {
     });
     const gainNode = new GainNode(this.#audioContext);
 
-    gainNode.gain.linearRampToValueAtTime(1, this.#nextNoteTime);
-    gainNode.gain.linearRampToValueAtTime(0, this.#nextNoteTime + 0.03);
+    gainNode.gain.linearRampToValueAtTime(1, this.#nextOscillationTime);
+    gainNode.gain.linearRampToValueAtTime(0, this.#nextOscillationTime + 0.03);
 
     oscillatorNode.connect(gainNode);
     gainNode.connect(this.#audioContext.destination);
 
-    oscillatorNode.start(this.#nextNoteTime);
-    oscillatorNode.stop(this.#nextNoteTime + 0.03);
+    oscillatorNode.start(this.#nextOscillationTime);
+    oscillatorNode.stop(this.#nextOscillationTime + 0.03);
 
     oscillatorNode.onended = () => {
       this.#enqueue();
@@ -73,7 +73,7 @@ export default class EventQueue implements Metronome {
     };
 
     this.#queue.push(oscillatorNode);
-    this.#nextNoteTime += this.#secondsPerBeat;
+    this.#nextOscillationTime += this.#secondsPerBeat;
   }
 
   #clear() {

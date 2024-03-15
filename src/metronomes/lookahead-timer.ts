@@ -4,7 +4,7 @@ export default class LookaheadTimer implements Metronome {
   #isPlaying = false;
   #audioContext = new AudioContext();
   #intervalId = 0;
-  #nextNoteTime = 0;
+  #nextOscillationTime = 0;
   #secondsPerBeat = 60 / 135;
 
   async play() {
@@ -14,8 +14,8 @@ export default class LookaheadTimer implements Metronome {
 
     await this.#audioContext.resume();
 
-    this.#nextNoteTime = this.#audioContext.currentTime;
-    this.#oscillate();
+    this.#nextOscillationTime = this.#audioContext.currentTime;
+    this.#scheduleOscillation();
     setInterval(this.#schedule, 25);
 
     this.#isPlaying = true;
@@ -41,26 +41,26 @@ export default class LookaheadTimer implements Metronome {
   // to 'setInterval' as a callback.
   #schedule = () => {
     // Schedule all oscillations that should happen within the next 100ms.
-    while (this.#nextNoteTime < this.#audioContext.currentTime + 0.1) {
-      this.#oscillate();
-      this.#nextNoteTime += this.#secondsPerBeat;
+    while (this.#nextOscillationTime < this.#audioContext.currentTime + 0.1) {
+      this.#scheduleOscillation();
+      this.#nextOscillationTime += this.#secondsPerBeat;
     }
   };
 
-  #oscillate() {
+  #scheduleOscillation() {
     const oscillatorNode = new OscillatorNode(this.#audioContext, {
       // E4
       frequency: 330
     });
     const gainNode = new GainNode(this.#audioContext);
 
-    gainNode.gain.linearRampToValueAtTime(1, this.#nextNoteTime);
-    gainNode.gain.linearRampToValueAtTime(0, this.#nextNoteTime + 0.03);
+    gainNode.gain.linearRampToValueAtTime(1, this.#nextOscillationTime);
+    gainNode.gain.linearRampToValueAtTime(0, this.#nextOscillationTime + 0.03);
 
     oscillatorNode.connect(gainNode);
     gainNode.connect(this.#audioContext.destination);
 
-    oscillatorNode.start(this.#nextNoteTime);
-    oscillatorNode.stop(this.#nextNoteTime + 0.03);
+    oscillatorNode.start(this.#nextOscillationTime);
+    oscillatorNode.stop(this.#nextOscillationTime + 0.03);
   }
 }
