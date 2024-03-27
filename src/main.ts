@@ -6,13 +6,15 @@ import AudioLoop from "./metronomes/audio-loop.ts";
 import CustomTimer from "./metronomes/custom-timer.ts";
 import EventQueue from "./metronomes/event-queue.ts";
 import LookaheadTimer from "./metronomes/lookahead-timer.ts";
+import WorkerTimer from "./metronomes/worker-timer.ts";
 
 // Available metronomes
 const metronomeLookup: { [name: string]: Metronome } = {
   "audio-loop": new AudioLoop(),
   "custom-timer": new CustomTimer(),
   "event-queue": new EventQueue(),
-  "lookahead-timer": new LookaheadTimer()
+  "lookahead-timer": new LookaheadTimer(),
+  "worker-timer": new WorkerTimer()
 };
 // Metronome chooser
 const metronomeDropdown = document.getElementById(
