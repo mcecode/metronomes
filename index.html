@@ -46,7 +46,9 @@
             <path d="m13.25 7.75h-10.5" />
           </svg>
         </button>
-        <p id="bpm-value" class="bpm" aria-live="assertive">135 BPM</p>
+        <p id="bpm-value" class="bpm" aria-live="assertive">
+          %VITE_DEFAULT_BPM% BPM
+        </p>
         <button
           id="bpm-inc"
           class="inc-button no-button"
@@ -63,7 +65,7 @@
           type="range"
           min="30"
           max="240"
-          value="135"
+          value="%VITE_DEFAULT_BPM%"
           aria-label="BPM Slider"
         />
       </section>

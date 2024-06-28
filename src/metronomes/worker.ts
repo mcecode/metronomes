@@ -1,6 +1,8 @@
+import { defaults } from "./metronome.ts";
+
 let isOn = false;
 let intervalId = 0;
-let timeInterval = 60_000 / 135;
+let timeInterval = 60_000 / defaults.bpm;
 
 function tick() {
   postMessage("tick");

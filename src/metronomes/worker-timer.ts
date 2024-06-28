@@ -3,7 +3,9 @@ import type Metronome from "./metronome.ts";
 export default class WorkerTimer implements Metronome {
   #isPlaying = false;
   #audio = new Audio("/audio.mp3");
-  #worker = new Worker(new URL("./worker.ts", import.meta.url));
+  #worker = new Worker(new URL("./worker.ts", import.meta.url), {
+    type: "module"
+  });
 
   constructor() {
     this.#worker.onmessage = (e) => {

@@ -1,11 +1,13 @@
 import type Metronome from "./metronome.ts";
 
+import { defaults } from "./metronome.ts";
+
 export default class AudioLoop implements Metronome {
   #isPlaying = false;
   #audioContext = new AudioContext();
   #sourceNode = new AudioBufferSourceNode(this.#audioContext, {
     loop: true,
-    loopEnd: 60 / 135
+    loopEnd: 60 / defaults.bpm
   });
 
   constructor() {
@@ -16,8 +18,7 @@ export default class AudioLoop implements Metronome {
         sampleRate: this.#audioContext.sampleRate
       });
       const oscillatorNode = new OscillatorNode(offlineAudioContext, {
-        // E4
-        frequency: 330
+        frequency: defaults.frequency
       });
       const gainNode = new GainNode(offlineAudioContext);
 

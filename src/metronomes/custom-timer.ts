@@ -1,9 +1,11 @@
 import type Metronome from "./metronome.ts";
 
+import { defaults } from "./metronome.ts";
+
 export default class CustomTimer implements Metronome {
   #isPlaying = false;
   #audio = new Audio("/audio.mp3");
-  #timer = new SelfCorrectingTimer(60_000 / 135, () => {
+  #timer = new SelfCorrectingTimer(60_000 / defaults.bpm, () => {
     this.#audio.currentTime = 0;
     this.#audio.play();
   });
@@ -75,11 +77,12 @@ class SelfCorrectingTimer {
   #internalCallback = () => {
     this.#callback();
 
+    const drift = performance.now() - this.#nextCallbackFireTime;
     this.#timeoutId = setTimeout(
       this.#internalCallback,
-      // Take into account drift when setting the new timeout.
-      this.#timeInterval - (performance.now() - this.#nextCallbackFireTime)
+      this.#timeInterval - drift
     );
+
     this.#nextCallbackFireTime += this.#timeInterval;
   };
 }
