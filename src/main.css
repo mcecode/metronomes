@@ -119,7 +119,7 @@ a {
     Specifying a fixed width prevents shifting when content changes from 6 to 7
     characters and vice versa.
   */
-  width: 7ch;
+  width: 8ch;
   font-size: 1.5rem;
 }
 .dec-button {
